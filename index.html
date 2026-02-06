@@ -1,13 +1,214 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎁 Presente Especial</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Aniversário 🎉</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+
+  .scene {
+    width: 800px;
+    height: 300px;
+    position: relative;
+    border-bottom: 2px solid #334155;
+  }
+
+  /* Boneco */
+  .character {
+    position: absolute;
+    bottom: 0;
+    left: -100px;
+    width: 80px;
+    animation: walk 6s linear forwards;
+  }
+
+  @keyframes walk {
+    to { left: 60%; }
+  }
+
+  .head {
+    width: 30px;
+    height: 30px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    margin: 0 auto;
+  }
+
+  .body {
+    width: 14px;
+    height: 40px;
+    background: #e5e7eb;
+    margin: 4px auto;
+  }
+
+  .arm, .leg {
+    width: 10px;
+    height: 35px;
+    background: #e5e7eb;
+    position: absolute;
+    transform-origin: top;
+  }
+
+  .arm.left { left: 10px; top: 38px; animation: swing 0.6s infinite alternate; }
+  .arm.right { right: 10px; top: 38px; animation: swing 0.6s infinite alternate-reverse; }
+
+  .leg.left { left: 22px; top: 70px; animation: step 0.6s infinite alternate; }
+  .leg.right { right: 22px; top: 70px; animation: step 0.6s infinite alternate-reverse; }
+
+  @keyframes swing {
+    from { transform: rotate(15deg); }
+    to { transform: rotate(-15deg); }
+  }
+
+  @keyframes step {
+    from { transform: rotate(-20deg); }
+    to { transform: rotate(20deg); }
+  }
+
+  /* Presente */
+  .gift {
+    position: absolute;
+    bottom: 0;
+    right: 120px;
+    width: 50px;
+    height: 50px;
+    background: #dc2626;
+    display: none;
+  }
+
+  .gift::before {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 100%;
+    background: #facc15;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .gift::after {
+    content: "";
+    position: absolute;
+    height: 8px;
+    width: 100%;
+    background: #facc15;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Texto */
+  .message {
+    position: absolute;
+    top: -10px;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+  }
+
+  .show {
+    animation: fadeIn 2s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  button {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #facc15;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="scene">
+
+  <div class="character">
+    <div class="head"></div>
+    <div class="body"></div>
+    <div class="arm left"></div>
+    <div class="arm right"></div>
+    <div class="leg left"></div>
+    <div class="leg right"></div>
+  </div>
+
+  <div class="gift"></div>
+
+  <div class="message" id="msg">
+    <h2>🎉 Feliz aniversário, amigooooo! 🎉</h2>
+    <p>
+      Amei te conhecer, você é uma pessoa incrível.<br>
+      Que a vida continue te surpreendendo com coisas boas,<br>
+      muita saúde, paz e sucesso.<br><br>
+      Aproveite cada momento do seu dia! 💛
+    </p>
+  </div>
+
+  <button onclick="start()">Clique para abrir o presente 🎁</button>
+</div>
+
+<script>
+let started = false;
+
+function start() {
+  if (started) return;
+  started = true;
+
+  const gift = document.querySelector('.gift');
+  const msg = document.getElementById('msg');
+
+  gift.style.display = 'block';
+
+  setTimeout(() => {
+    msg.classList.add('show');
+    playHappyBirthday();
+  }, 1500);
+}
+
+function playHappyBirthday() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const notes = [
+    264,264,297,264,352,330,
+    264,264,297,264,396,352
+  ];
+
+  let t = ctx.currentTime;
+
+  notes.forEach(n => {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.frequency.value = n;
+    o.connect(g);
+    g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    o.start(t);
+    o.stop(t + 0.4);
+    t += 0.45;
+  });
+}
+</script>
+
+</body>
 </html>
